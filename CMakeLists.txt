@@ -50,3 +50,7 @@ if(CK3E_BUILD_TESTS)
   target_link_libraries(${PROJECT_NAME}Tests PRIVATE ${PROJECT_NAME}Lib gtest_main gmock)
   add_test(NAME ${PROJECT_NAME}Tests COMMAND ${PROJECT_NAME}Tests)
 endif()
+
+include(InstallRequiredSystemLibraries)
+install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin)
+include(CPack)
