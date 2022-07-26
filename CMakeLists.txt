@@ -14,18 +14,28 @@ endif()
 
 option(CK3E_BUILD_TESTS "Build tests" ON)
 
+
+include(FetchContent)
+
+set(SDL_SHARED OFF)
+set(SDL_STATIC ON)
+FetchContent_Declare(sdl GIT_REPOSITORY https://github.com/libsdl-org/SDL.git GIT_TAG 2.0.22)
+FetchContent_MakeAvailable(sdl)
+set(SDL2_INCLUDE_DIR "${FETCHCONTENT_BASE_DIR}/sdl-src/include")
+
 add_library(${PROJECT_NAME}Lib)
 target_sources(${PROJECT_NAME}Lib PRIVATE
   src/main.cpp
 )
 
-target_include_directories(${PROJECT_NAME}Lib PUBLIC include)
+target_include_directories(${PROJECT_NAME}Lib PUBLIC include ${SDL2_INCLUDE_DIR})
 
 add_executable(${PROJECT_NAME})
 target_sources(${PROJECT_NAME} PRIVATE
   src/main.cpp
 )
-target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}Lib)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}Lib SDL2 SDL2main)
 
 if(CK3E_BUILD_TESTS)
   enable_testing()
