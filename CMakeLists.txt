@@ -14,28 +14,23 @@ endif()
 
 option(CK3E_BUILD_TESTS "Build tests" ON)
 
-
-include(FetchContent)
-
-set(SDL_SHARED OFF)
-set(SDL_STATIC ON)
-FetchContent_Declare(sdl GIT_REPOSITORY https://github.com/libsdl-org/SDL.git GIT_TAG 2.0.22)
-FetchContent_MakeAvailable(sdl)
-set(SDL2_INCLUDE_DIR "${FETCHCONTENT_BASE_DIR}/sdl-src/include")
-
 add_library(${PROJECT_NAME}Lib)
 target_sources(${PROJECT_NAME}Lib PRIVATE
   src/main.cpp
 )
 
-target_include_directories(${PROJECT_NAME}Lib PUBLIC include ${SDL2_INCLUDE_DIR})
+target_include_directories(${PROJECT_NAME}Lib PUBLIC include sdlInclude/include)
+
+file(COPY lib/SDL2.lib DESTINATION .)
+file(COPY lib/SDL2main.lib DESTINATION .)
+file(COPY lib/SDL2.dll DESTINATION .)
 
 add_executable(${PROJECT_NAME})
 target_sources(${PROJECT_NAME} PRIVATE
   src/main.cpp
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}Lib SDL2 SDL2main)
+target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}Lib SDL2.lib SDL2main.lib)
 
 if(CK3E_BUILD_TESTS)
   enable_testing()
@@ -62,5 +57,7 @@ if(CK3E_BUILD_TESTS)
 endif()
 
 include(InstallRequiredSystemLibraries)
+install(FILES lib/SDL2.dll DESTINATION bin)
+install(FILES images/hello_world.bmp DESTINATION bin)
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin)
 include(CPack)
